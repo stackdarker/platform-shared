@@ -1,0 +1,16 @@
+PageMeta:
+  type: object
+  required:
+    - limit
+    - hasNext
+  properties:
+    limit:
+      type: integer
+      example: 20
+    nextCursor:
+      type: string
+      nullable: true
+      example: opaque-string
+    hasNext:
+      type: boolean
+      example: true

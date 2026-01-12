@@ -1,0 +1,6 @@
+Error422:
+  description: Validation failed
+  content:
+    application/json:
+      schema:
+        $ref: "../schemas/ErrorResponse.yaml#/ErrorResponse"

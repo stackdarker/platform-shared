@@ -1,0 +1,37 @@
+ErrorResponse:
+  type: object
+  required:
+    - requestId
+    - timestamp
+    - status
+    - error
+    - message
+    - path
+    - code
+  properties:
+    requestId:
+      type: string
+      example: 01J2Q7K9RZ7M8A9R6V3G7P1D2E
+    timestamp:
+      type: string
+      format: date-time
+    status:
+      type: integer
+      example: 422
+    error:
+      type: string
+      example: UNPROCESSABLE_ENTITY
+    message:
+      type: string
+      example: Validation failed
+    path:
+      type: string
+      example: /v1/auth/login
+    code:
+      type: string
+      example: AUTH_VALIDATION_FAILED
+    details:
+      type: array
+      items:
+        $ref: "./ErrorItem.yaml#/ErrorItem"
+      nullable: true

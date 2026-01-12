@@ -1,0 +1,6 @@
+Error429:
+  description: Too many requests
+  content:
+    application/json:
+      schema:
+        $ref: "../schemas/ErrorResponse.yaml#/ErrorResponse"

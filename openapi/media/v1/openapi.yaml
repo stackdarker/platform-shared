@@ -1,0 +1,182 @@
+openapi: 3.0.3
+info:
+  title: platform-media-service API
+  version: 1.0.0
+  description: Media service for upload intents, media metadata, and download URLs (skeleton).
+servers:
+  - url: http://localhost:8082
+    description: Local dev
+tags:
+  - name: Health
+  - name: Uploads
+  - name: Objects
+
+paths:
+  /v1/health:
+    get:
+      tags: [Health]
+      summary: Health check
+      security: []
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Request-Id:
+              $ref: "../../_shared/components/headers/X-Request-Id.yaml#/X-Request-Id"
+
+  /v1/media/uploads:
+    post:
+      tags: [Uploads]
+      summary: Create an upload intent (stub)
+      description: Returns an upload URL/token depending on storage implementation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUploadRequest"
+      responses:
+        "201":
+          description: Upload intent created
+          headers:
+            X-Request-Id:
+              $ref: "../../_shared/components/headers/X-Request-Id.yaml#/X-Request-Id"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateUploadResponse"
+        "401":
+          $ref: "#/components/responses/Error401"
+        "422":
+          $ref: "#/components/responses/Error422"
+        "500":
+          $ref: "#/components/responses/Error500"
+
+  /v1/media/objects/{objectId}:
+    get:
+      tags: [Objects]
+      summary: Get media object metadata (stub)
+      parameters:
+        - name: objectId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Media object
+          headers:
+            X-Request-Id:
+              $ref: "../../_shared/components/headers/X-Request-Id.yaml#/X-Request-Id"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaObject"
+        "401":
+          $ref: "#/components/responses/Error401"
+        "404":
+          $ref: "#/components/responses/Error404"
+        "500":
+          $ref: "#/components/responses/Error500"
+
+  /v1/media/objects/{objectId}/download:
+    get:
+      tags: [Objects]
+      summary: Get a download URL (stub)
+      parameters:
+        - name: objectId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Download URL payload
+          headers:
+            X-Request-Id:
+              $ref: "../../_shared/components/headers/X-Request-Id.yaml#/X-Request-Id"
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [url, expiresAt]
+                properties:
+                  url:
+                    type: string
+                  expiresAt:
+                    type: string
+                    format: date-time
+        "401":
+          $ref: "#/components/responses/Error401"
+        "404":
+          $ref: "#/components/responses/Error404"
+        "500":
+          $ref: "#/components/responses/Error500"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Error401:
+      $ref: "../../_shared/components/responses/Error401.yaml#/Error401"
+    Error404:
+      $ref: "../../_shared/components/responses/Error404.yaml#/Error404"
+    Error422:
+      $ref: "../../_shared/components/responses/Error422.yaml#/Error422"
+    Error500:
+      $ref: "../../_shared/components/responses/Error500.yaml#/Error500"
+
+  schemas:
+    CreateUploadRequest:
+      type: object
+      required: [fileName, contentType]
+      properties:
+        fileName:
+          type: string
+        contentType:
+          type: string
+          example: image/png
+        contentLength:
+          type: integer
+          nullable: true
+
+    CreateUploadResponse:
+      type: object
+      required: [objectId, uploadUrl]
+      properties:
+        objectId:
+          type: string
+          format: uuid
+        uploadUrl:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    MediaObject:
+      type: object
+      required: [id, fileName, contentType, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        fileName:
+          type: string
+        contentType:
+          type: string
+        sizeBytes:
+          type: integer
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+
+security:
+  - bearerAuth: []

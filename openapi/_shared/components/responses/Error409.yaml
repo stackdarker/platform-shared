@@ -1,0 +1,6 @@
+Error409:
+  description: Conflict
+  content:
+    application/json:
+      schema:
+        $ref: "../schemas/ErrorResponse.yaml#/ErrorResponse"

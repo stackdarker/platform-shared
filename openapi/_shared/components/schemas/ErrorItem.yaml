@@ -1,0 +1,21 @@
+ErrorItem:
+  type: object
+  required:
+    - code
+    - message
+  properties:
+    code:
+      type: string
+      example: FIELD_REQUIRED
+    message:
+      type: string
+      example: email is required
+    field:
+      type: string
+      nullable: true
+    rejectedValue:
+      nullable: true
+    meta:
+      type: object
+      additionalProperties: true
+      nullable: true

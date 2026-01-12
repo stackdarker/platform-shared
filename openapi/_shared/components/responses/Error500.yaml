@@ -1,0 +1,6 @@
+Error500:
+  description: Internal server error
+  content:
+    application/json:
+      schema:
+        $ref: "../schemas/ErrorResponse.yaml#/ErrorResponse"

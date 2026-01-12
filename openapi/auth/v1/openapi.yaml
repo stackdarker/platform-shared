@@ -2,25 +2,34 @@ openapi: 3.0.3
 info:
   title: platform-auth-service API
   version: 1.0.0
-  description: Authentication and authorization service for the platform (JWT, sessions, RBAC).
+  description: Authentication and identity service (JWT, sessions, RBAC).
 servers:
   - url: http://localhost:8081
     description: Local dev
 tags:
+  - name: Health
   - name: Auth
   - name: Users
-  - name: Roles
-  - name: Permissions
   - name: Sessions
-security:
-  - bearerAuth: []
 
 paths:
+  /v1/health:
+    get:
+      tags: [Health]
+      summary: Health check
+      security: []
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Request-Id:
+              $ref: "../../_shared/components/headers/X-Request-Id.yaml#/X-Request-Id"
+
   /v1/auth/register:
     post:
       tags: [Auth]
       summary: Register a new user
-      security: [] 
+      security: []
       requestBody:
         required: true
         content:
@@ -32,7 +41,7 @@ paths:
           description: Registered
           headers:
             X-Request-Id:
-              $ref: "#/components/headers/X-Request-Id"
+              $ref: "../../_shared/components/headers/X-Request-Id.yaml#/X-Request-Id"
           content:
             application/json:
               schema:
@@ -47,7 +56,7 @@ paths:
   /v1/auth/login:
     post:
       tags: [Auth]
-      summary: Login and receive JWT access/refresh tokens
+      summary: Login and receive JWT tokens
       security: []
       requestBody:
         required: true
@@ -60,7 +69,7 @@ paths:
           description: Logged in
           headers:
             X-Request-Id:
-              $ref: "#/components/headers/X-Request-Id"
+              $ref: "../../_shared/components/headers/X-Request-Id.yaml#/X-Request-Id"
           content:
             application/json:
               schema:
@@ -75,7 +84,7 @@ paths:
   /v1/auth/refresh:
     post:
       tags: [Auth]
-      summary: Refresh tokens using a refresh token
+      summary: Refresh tokens
       security: []
       requestBody:
         required: true
@@ -88,7 +97,7 @@ paths:
           description: Refreshed
           headers:
             X-Request-Id:
-              $ref: "#/components/headers/X-Request-Id"
+              $ref: "../../_shared/components/headers/X-Request-Id.yaml#/X-Request-Id"
           content:
             application/json:
               schema:
@@ -103,14 +112,13 @@ paths:
   /v1/auth/logout:
     post:
       tags: [Auth]
-      summary: Logout (revoke current session / refresh token)
-      description: Requires access token. Implementation may revoke session and/or refresh token.
+      summary: Logout (revoke current session)
       responses:
         "204":
           description: Logged out
           headers:
             X-Request-Id:
-              $ref: "#/components/headers/X-Request-Id"
+              $ref: "../../_shared/components/headers/X-Request-Id.yaml#/X-Request-Id"
         "401":
           $ref: "#/components/responses/Error401"
         "500":
@@ -125,105 +133,13 @@ paths:
           description: Current user
           headers:
             X-Request-Id:
-              $ref: "#/components/headers/X-Request-Id"
+              $ref: "../../_shared/components/headers/X-Request-Id.yaml#/X-Request-Id"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
         "401":
           $ref: "#/components/responses/Error401"
-        "500":
-          $ref: "#/components/responses/Error500"
-
-  /v1/users:
-    get:
-      tags: [Users]
-      summary: List users (admin)
-      description: Requires permission USERS_READ (example).
-      parameters:
-        - $ref: "#/components/parameters/Limit"
-        - $ref: "#/components/parameters/Cursor"
-      responses:
-        "200":
-          description: Paged users
-          headers:
-            X-Request-Id:
-              $ref: "#/components/headers/X-Request-Id"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PagedUsers"
-        "401":
-          $ref: "#/components/responses/Error401"
-        "403":
-          $ref: "#/components/responses/Error403"
-        "500":
-          $ref: "#/components/responses/Error500"
-
-  /v1/users/{userId}:
-    get:
-      tags: [Users]
-      summary: Get user by id (admin)
-      parameters:
-        - $ref: "#/components/parameters/UserId"
-      responses:
-        "200":
-          description: User
-          headers:
-            X-Request-Id:
-              $ref: "#/components/headers/X-Request-Id"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
-        "401":
-          $ref: "#/components/responses/Error401"
-        "403":
-          $ref: "#/components/responses/Error403"
-        "404":
-          $ref: "#/components/responses/Error404"
-        "500":
-          $ref: "#/components/responses/Error500"
-
-  /v1/roles:
-    get:
-      tags: [Roles]
-      summary: List roles (admin)
-      responses:
-        "200":
-          description: Roles
-          headers:
-            X-Request-Id:
-              $ref: "#/components/headers/X-Request-Id"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RolesList"
-        "401":
-          $ref: "#/components/responses/Error401"
-        "403":
-          $ref: "#/components/responses/Error403"
-        "500":
-          $ref: "#/components/responses/Error500"
-
-  /v1/permissions:
-    get:
-      tags: [Permissions]
-      summary: List permissions (admin)
-      responses:
-        "200":
-          description: Permissions
-          headers:
-            X-Request-Id:
-              $ref: "#/components/headers/X-Request-Id"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PermissionsList"
-        "401":
-          $ref: "#/components/responses/Error401"
-        "403":
-          $ref: "#/components/responses/Error403"
         "500":
           $ref: "#/components/responses/Error500"
 
@@ -239,7 +155,7 @@ paths:
           description: Paged sessions
           headers:
             X-Request-Id:
-              $ref: "#/components/headers/X-Request-Id"
+              $ref: "../../_shared/components/headers/X-Request-Id.yaml#/X-Request-Id"
           content:
             application/json:
               schema:
@@ -256,82 +172,29 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
-  headers:
-    X-Request-Id:
-      description: Correlation id for this request.
-      schema:
-        type: string
-
   parameters:
-    UserId:
-      name: userId
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-
     Limit:
-      name: limit
-      in: query
-      required: false
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 20
-
+      $ref: "../../_shared/components/parameters/Limit.yaml#/Limit"
     Cursor:
-      name: cursor
-      in: query
-      required: false
-      schema:
-        type: string
-        description: Opaque cursor for pagination.
+      $ref: "../../_shared/components/parameters/Cursor.yaml#/Cursor"
 
   responses:
     Error400:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorResponse"
+      $ref: "../../_shared/components/responses/Error400.yaml#/Error400"
     Error401:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorResponse"
+      $ref: "../../_shared/components/responses/Error401.yaml#/Error401"
     Error403:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorResponse"
+      $ref: "../../_shared/components/responses/Error403.yaml#/Error403"
     Error404:
-      description: Not found
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorResponse"
+      $ref: "../../_shared/components/responses/Error404.yaml#/Error404"
     Error409:
-      description: Conflict
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorResponse"
+      $ref: "../../_shared/components/responses/Error409.yaml#/Error409"
     Error422:
-      description: Validation failed
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorResponse"
+      $ref: "../../_shared/components/responses/Error422.yaml#/Error422"
+    Error429:
+      $ref: "../../_shared/components/responses/Error429.yaml#/Error429"
     Error500:
-      description: Internal server error
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorResponse"
+      $ref: "../../_shared/components/responses/Error500.yaml#/Error500"
 
   schemas:
     RegisterRequest:
@@ -341,7 +204,6 @@ components:
         email:
           type: string
           format: email
-          example: user@example.com
         password:
           type: string
           format: password
@@ -367,11 +229,10 @@ components:
       properties:
         refreshToken:
           type: string
-          description: Refresh token previously issued by login/refresh.
 
     AuthTokens:
       type: object
-      required: [accessToken, refreshToken, tokenType, expiresIn]
+      required: [tokenType, accessToken, refreshToken, expiresIn]
       properties:
         tokenType:
           type: string
@@ -398,10 +259,6 @@ components:
         displayName:
           type: string
           nullable: true
-        roles:
-          type: array
-          items:
-            $ref: "#/components/schemas/Role"
         createdAt:
           type: string
           format: date-time
@@ -409,32 +266,6 @@ components:
           type: string
           format: date-time
           nullable: true
-
-    Role:
-      type: object
-      required: [id, name]
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-          example: ADMIN
-        permissions:
-          type: array
-          items:
-            $ref: "#/components/schemas/Permission"
-
-    Permission:
-      type: object
-      required: [id, name]
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-          example: USERS_READ
 
     Session:
       type: object
@@ -456,27 +287,7 @@ components:
           type: boolean
 
     PageMeta:
-      type: object
-      required: [limit, hasNext]
-      properties:
-        limit:
-          type: integer
-        nextCursor:
-          type: string
-          nullable: true
-        hasNext:
-          type: boolean
-
-    PagedUsers:
-      type: object
-      required: [data, page]
-      properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/User"
-        page:
-          $ref: "#/components/schemas/PageMeta"
+      $ref: "../../_shared/components/schemas/PageMeta.yaml#/PageMeta"
 
     PagedSessions:
       type: object
@@ -489,71 +300,5 @@ components:
         page:
           $ref: "#/components/schemas/PageMeta"
 
-    RolesList:
-      type: object
-      required: [data]
-      properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/Role"
-
-    PermissionsList:
-      type: object
-      required: [data]
-      properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/Permission"
-
-    ErrorItem:
-      type: object
-      required: [code, message]
-      properties:
-        code:
-          type: string
-          example: FIELD_REQUIRED
-        message:
-          type: string
-          example: email is required
-        field:
-          type: string
-          nullable: true
-        rejectedValue:
-          nullable: true
-        meta:
-          type: object
-          additionalProperties: true
-          nullable: true
-
-    ErrorResponse:
-      type: object
-      required: [requestId, timestamp, status, error, message, path, code]
-      properties:
-        requestId:
-          type: string
-          example: 01J2Q7K9RZ7M8A9R6V3G7P1D2E
-        timestamp:
-          type: string
-          format: date-time
-        status:
-          type: integer
-          example: 422
-        error:
-          type: string
-          example: UNPROCESSABLE_ENTITY
-        message:
-          type: string
-          example: Validation failed
-        path:
-          type: string
-          example: /v1/auth/login
-        code:
-          type: string
-          example: AUTH_VALIDATION_FAILED
-        details:
-          type: array
-          items:
-            $ref: "#/components/schemas/ErrorItem"
-          nullable: true
+security:
+  - bearerAuth: []

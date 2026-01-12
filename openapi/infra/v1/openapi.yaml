@@ -1,0 +1,65 @@
+openapi: 3.0.3
+info:
+  title: platform-infra API
+  version: 1.0.0
+  description: Platform infrastructure coordination API (internal). May expose admin/ops endpoints later.
+servers:
+  - url: http://localhost:8080
+    description: Local dev
+tags:
+  - name: Health
+  - name: Ops
+
+paths:
+  /v1/health:
+    get:
+      tags: [Health]
+      summary: Health check
+      security: []
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Request-Id:
+              $ref: "../../_shared/components/headers/X-Request-Id.yaml#/X-Request-Id"
+
+  /v1/ops/status:
+    get:
+      tags: [Ops]
+      summary: Platform status (stub)
+      description: Placeholder for future infra status aggregation.
+      responses:
+        "200":
+          description: Status payload (stub)
+          headers:
+            X-Request-Id:
+              $ref: "../../_shared/components/headers/X-Request-Id.yaml#/X-Request-Id"
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "401":
+          $ref: "#/components/responses/Error401"
+        "403":
+          $ref: "#/components/responses/Error403"
+        "500":
+          $ref: "#/components/responses/Error500"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Error401:
+      $ref: "../../_shared/components/responses/Error401.yaml#/Error401"
+    Error403:
+      $ref: "../../_shared/components/responses/Error403.yaml#/Error403"
+    Error500:
+      $ref: "../../_shared/components/responses/Error500.yaml#/Error500"
+
+security:
+  - bearerAuth: []

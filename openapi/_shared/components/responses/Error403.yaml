@@ -1,0 +1,6 @@
+Error403:
+  description: Forbidden
+  content:
+    application/json:
+      schema:
+        $ref: "../schemas/ErrorResponse.yaml#/ErrorResponse"

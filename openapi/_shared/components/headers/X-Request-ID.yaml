@@ -1,0 +1,4 @@
+X-Request-Id:
+  description: Correlation id for this request. Echoed back by the service.
+  schema:
+    type: string

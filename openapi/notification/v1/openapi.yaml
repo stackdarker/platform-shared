@@ -1,0 +1,158 @@
+openapi: 3.0.3
+info:
+  title: platform-notification-service API
+  version: 1.0.0
+  description: Notification service for sending messages via email/sms/push (skeleton).
+servers:
+  - url: http://localhost:8083
+    description: Local dev
+tags:
+  - name: Health
+  - name: Notifications
+
+paths:
+  /v1/health:
+    get:
+      tags: [Health]
+      summary: Health check
+      security: []
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Request-Id:
+              $ref: "../../_shared/components/headers/X-Request-Id.yaml#/X-Request-Id"
+
+  /v1/notifications/send:
+    post:
+      tags: [Notifications]
+      summary: Send a notification (stub)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendNotificationRequest"
+      responses:
+        "202":
+          description: Accepted for delivery
+          headers:
+            X-Request-Id:
+              $ref: "../../_shared/components/headers/X-Request-Id.yaml#/X-Request-Id"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SendNotificationResponse"
+        "401":
+          $ref: "#/components/responses/Error401"
+        "422":
+          $ref: "#/components/responses/Error422"
+        "500":
+          $ref: "#/components/responses/Error500"
+
+  /v1/notifications/{notificationId}:
+    get:
+      tags: [Notifications]
+      summary: Get notification status (stub)
+      parameters:
+        - name: notificationId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Status payload
+          headers:
+            X-Request-Id:
+              $ref: "../../_shared/components/headers/X-Request-Id.yaml#/X-Request-Id"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationStatus"
+        "401":
+          $ref: "#/components/responses/Error401"
+        "404":
+          $ref: "#/components/responses/Error404"
+        "500":
+          $ref: "#/components/responses/Error500"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Error401:
+      $ref: "../../_shared/components/responses/Error401.yaml#/Error401"
+    Error404:
+      $ref: "../../_shared/components/responses/Error404.yaml#/Error404"
+    Error422:
+      $ref: "../../_shared/components/responses/Error422.yaml#/Error422"
+    Error500:
+      $ref: "../../_shared/components/responses/Error500.yaml#/Error500"
+
+  schemas:
+    SendNotificationRequest:
+      type: object
+      required: [channel, to]
+      properties:
+        channel:
+          type: string
+          description: Notification channel (treat as open string).
+          example: EMAIL
+        to:
+          type: string
+          description: Destination (email, phone number, device token, etc.)
+          example: user@example.com
+        templateId:
+          type: string
+          nullable: true
+        subject:
+          type: string
+          nullable: true
+        body:
+          type: string
+          nullable: true
+        variables:
+          type: object
+          additionalProperties: true
+          nullable: true
+
+    SendNotificationResponse:
+      type: object
+      required: [notificationId, status]
+      properties:
+        notificationId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          example: QUEUED
+
+    NotificationStatus:
+      type: object
+      required: [notificationId, status, createdAt]
+      properties:
+        notificationId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          example: SENT
+        providerMessageId:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+security:
+  - bearerAuth: []

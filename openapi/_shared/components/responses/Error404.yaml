@@ -1,0 +1,6 @@
+Error404:
+  description: Not found
+  content:
+    application/json:
+      schema:
+        $ref: "../schemas/ErrorResponse.yaml#/ErrorResponse"
