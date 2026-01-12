@@ -1,0 +1,14 @@
+# ===== Build artifacts =====
+/shared-java/target
+/shared-java/build
+
+# ===== IDE / editor files =====
+.vscode
+.idea
+*.iml
+
+# ===== OS files =====
+.DS_Store
+
+# ===== Environment files =====
+.env
