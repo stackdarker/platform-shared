@@ -2,8 +2,14 @@ extends:
   - spectral:oas
 
 rules:
+  operation-description: off
+  operation-operationId: off
+  operationid-recommended: off
+
+  # Disable rules/sections not needed yet
+  oas3-unused-component: off
   info-contact: off
-  oas3-unused-component: warn
+  info-license: off
 
   # Make sure every spec has a version and title
   require-info-title:

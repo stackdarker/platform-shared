@@ -1,0 +1,21 @@
+# file intended to prevent warnings from Redocly CLI during early development stages
+
+apis:
+  main:
+    root: openapi/auth/v1/openapi.yaml
+
+rules:
+  # Don't force license blocks early
+  info-license: off
+
+  # Allow localhost while developing
+  no-server-example.com: off
+
+  # Don't require tag descriptions in early drafts
+  tag-description: off
+
+  # Don't force operationId yet 
+  operation-operationId: off
+
+  # Don't require 4xx responses on every operation during early stubs
+  operation-4xx-response: off

@@ -18,7 +18,7 @@ printf " - %s\n" "${SPECS[@]}"
 run_redocly() {
   local spec="$1"
   echo "==> Redocly lint: $spec"
-  npx -y @redocly/cli@latest lint "$spec"
+  npx -y @redocly/cli@latest lint --config .redocly.yaml "$spec"
 }
 
 run_spectral() {

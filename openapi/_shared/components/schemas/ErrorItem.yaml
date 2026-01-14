@@ -18,6 +18,7 @@ ErrorItem:
       description: Field name associated with the error (if applicable).
       nullable: true
     rejectedValue:
+      type: object
       description: Value rejected by validation. Must be null/omitted for sensitive fields.
       nullable: true
     meta:
