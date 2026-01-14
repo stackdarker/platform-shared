@@ -1,5 +1,6 @@
 ErrorResponse:
   type: object
+  additionalProperties: false
   required:
     - requestId
     - timestamp
@@ -11,27 +12,36 @@ ErrorResponse:
   properties:
     requestId:
       type: string
+      description: Correlation id (matches X-Request-Id header).
       example: 01J2Q7K9RZ7M8A9R6V3G7P1D2E
     timestamp:
       type: string
       format: date-time
+      description: RFC3339 timestamp in UTC.
+      example: 2026-01-12T18:22:11.123Z
     status:
       type: integer
+      description: HTTP status code.
       example: 422
     error:
       type: string
+      description: Upper snake case status name.
       example: UNPROCESSABLE_ENTITY
     message:
       type: string
+      description: Short, safe summary message.
       example: Validation failed
     path:
       type: string
+      description: Request path.
       example: /v1/auth/login
     code:
       type: string
+      description: Platform error code (namespaced by domain/service).
       example: AUTH_VALIDATION_FAILED
     details:
       type: array
+      description: Optional list of detail errors.
+      nullable: true
       items:
         $ref: "./ErrorItem.yaml#/ErrorItem"
-      nullable: true

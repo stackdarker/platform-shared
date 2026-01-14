@@ -1,0 +1,7 @@
+Cursor:
+  name: cursor
+  in: query
+  required: false
+  schema:
+    type: string
+  description: Opaque cursor for pagination.

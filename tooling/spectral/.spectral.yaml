@@ -1,0 +1,42 @@
+extends:
+  - spectral:oas
+
+rules:
+  info-contact: off
+  oas3-unused-component: warn
+
+  # Make sure every spec has a version and title
+  require-info-title:
+    description: OpenAPI info.title must be present
+    given: "$.info"
+    severity: error
+    then:
+      field: title
+      function: truthy
+
+  require-info-version:
+    description: OpenAPI info.version must be present
+    given: "$.info"
+    severity: error
+    then:
+      field: version
+      function: truthy
+
+  # Ensure /vN prefix for paths
+  paths-must-be-versioned:
+    description: Paths must start with /v{number}/
+    given: "$.paths[*]~"
+    severity: error
+    then:
+      function: pattern
+      functionOptions:
+        match: "^/v[0-9]+/"
+
+  # Recommend operationId for every operation
+  operationid-recommended:
+    description: operationId should be present for operations
+    given: "$.paths[*][*]"
+    severity: warn
+    then:
+      field: operationId
+      function: truthy

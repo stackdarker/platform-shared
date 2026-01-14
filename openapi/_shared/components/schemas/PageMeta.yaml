@@ -1,16 +1,20 @@
 PageMeta:
   type: object
+  additionalProperties: false
   required:
     - limit
     - hasNext
   properties:
     limit:
       type: integer
+      description: Applied limit.
       example: 20
     nextCursor:
       type: string
+      description: Cursor for the next page (opaque).
       nullable: true
       example: opaque-string
     hasNext:
       type: boolean
+      description: Whether another page exists.
       example: true

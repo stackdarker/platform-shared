@@ -1,0 +1,12 @@
+stages:
+  - validate
+
+validate:openapi:
+  stage: validate
+  image: node:20-alpine
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH
+  script:
+    - chmod +x tooling/scripts/validate.sh
+    - tooling/scripts/validate.sh

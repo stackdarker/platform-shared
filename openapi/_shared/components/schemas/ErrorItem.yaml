@@ -1,21 +1,27 @@
 ErrorItem:
   type: object
+  additionalProperties: false
   required:
     - code
     - message
   properties:
     code:
       type: string
+      description: Machine-readable detail code.
       example: FIELD_REQUIRED
     message:
       type: string
+      description: Human-readable detail message.
       example: email is required
     field:
       type: string
+      description: Field name associated with the error (if applicable).
       nullable: true
     rejectedValue:
+      description: Value rejected by validation. Must be null/omitted for sensitive fields.
       nullable: true
     meta:
       type: object
+      description: Arbitrary structured metadata (must not contain secrets).
       additionalProperties: true
       nullable: true
